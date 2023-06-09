@@ -1,72 +1,60 @@
 // Copyright 2021 NNTU-CS
 #ifndef INCLUDE_BST_H_
 #define INCLUDE_BST_H_
-template<typename T>
+template <typename T>
 class BST {
- public:
-  BST() :root(nullptr) {}
-  void AddValue(const T& value) {
-    root = addNode(root, value);
-  }
-  int search(const T& value) {
-    return searchNode(root, value);
-  }
-  int depth() {
-    return getDepth(root) - 1;
-  }
-
  private:
-
   struct Node {
-    Node() :count(0), left(nullptr), right(nullptr) {}
     T value;
-    int count;
-    Node* left;
-    Node* right;
+    int counter, dpth_node;
+    Node* left, * right;
   };
   Node* root;
-  Node* addNode(Node* root, const T& value) {
-    if (root == nullptr) {
+  int dpth_tree = -1;
+  Node* addNode(Node* root, T value, int depth) {
+    if (nullptr == root) {
       root = new Node;
       root->value = value;
-      root->left = nullptr;
-      root->right = nullptr;
-      root->count = 1;
-    } else if (root->value > value) {
-      root->right = addNode(root->right, value);
-    } else if (root->value < value) {
-      root->left = addNode(root->left, value);
+      root->counter = 1;
+      root->dpth_node = depth;
+      if (depth > dpth_tree)
+        dpth_tree = depth;
+      root->left = root->right = nullptr;
+    } else if (value < root->value) {
+      root->left = addNode(root->left, value, ++depth);
+    } else if (value > root->value) {
+      root->right = addNode(root->right, value, ++depth);
     } else {
-      root->count++;
+      root->counter++;
     }
     return root;
   }
 
-  int getDepth(Node* root) {
-    if (!root) {
-      return 0;
+  int searchTree(Node* root, T value) {
+    if (nullptr == root) {
+      return -1;
     }
-    int rightTree = getDepth(root->right);
-    int leftTree = getDepth(root->left);
-    if (rightTree > leftTree) {
-      return rightTree + 1;
-    } else {
-      return leftTree + 1;
+    while (true) {
+      if (value > root->value) {
+        root = root->right;
+      } else if (value < root->value) {
+        root = root->left;
+      } else {
+        return root->counter;
+      }
     }
   }
-  int searchNode(Node* root, const T& value) {
-    if (root == nullptr) {
-      return 0;
-    } else if (root->value < value) {
-      return searchNode(root->left, value);
-    } else if (root->value > value) {
-      return searchNode(root->right, value);
-    } else if (root->value == value) {
-      return root->count;
-    }
-    return 0;
+
+ public:
+  BST(): root(nullptr) {}
+  void add(T value) {
+    root = addNode(root, value, 0);
   }
-
-
+  int depth() {
+    return dpth_tree;
+  }
+  int search(T value) {
+    return searchTree(root, value);
+  }
 };
 #endif  // INCLUDE_BST_H_
