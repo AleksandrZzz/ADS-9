@@ -5,24 +5,35 @@
 #include  <cstdlib>
 #include  "bst.h"
 
+bool isLetter(char ch) {
+    return ch >= 'a' && ch <= 'z';
+}
+
 BST<std::string> makeTree(const char* filename) {
+  BST <std::string> tree;
   std::ifstream file(filename);
-  if (!file.is_open()) {
-    throw std::string("ERROR!");
-  }
-  std::string word = "";
-  BST<std::string> bst;
-  while (!file.eof()) {
-    word = "";
-    while (1) {
-      char symb = file.get();
-      if ((symb >= 65 && symb <= 90) || (symb >= 97 && symb <= 122)) {
-        word += tolower(symb);
-      } else {
-        break;
-      }
+  if (!file) {
+    std::cout << "File error!" << std::endl;
+    return tree;
+  } else {
+     while (!file.eof()) {
+     std::string temp = "";
+     while (true) {
+       char c;
+       c = file.get();
+       if (isLetter(c)) {
+         temp += c;
+       } else if (c >= 'A' && c <= 'Z') {
+           c = tolower(c);
+           temp += c;
+           } else {
+                break;
+            }
+     }
+       tree.add(temp);
+       temp.clear();
     }
-    bst.AddValue(word);
-  }
-  return bst;
+        file.close();
+        return tree;
+    }
 }
