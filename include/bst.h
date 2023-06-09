@@ -14,7 +14,9 @@ class BST {
   int depth() {
     return getDepth(root) - 1;
   }
+
  private:
+
   struct Node {
     Node() :count(0), left(nullptr), right(nullptr) {}
     T value;
@@ -39,18 +41,7 @@ class BST {
     }
     return root;
   }
-  int searchNode(Node* root, const T& value) {
-    if (root == nullptr) {
-      return 0;
-    } else if (root->value < value) {
-      return searchNode(root->left, value);
-    } else if (root->value > value) {
-      return searchNode(root->right, value);
-    } else if (root->value == value) {
-      return root->count;
-    }
-    return 0;
-  }
+
   int getDepth(Node* root) {
     if (!root) {
       return 0;
@@ -63,5 +54,19 @@ class BST {
       return leftTree + 1;
     }
   }
+  int searchNode(Node* root, const T& value) {
+    if (root == nullptr) {
+      return 0;
+    } else if (root->value < value) {
+      return searchNode(root->left, value);
+    } else if (root->value > value) {
+      return searchNode(root->right, value);
+    } else if (root->value == value) {
+      return root->count;
+    }
+    return 0;
+  }
+
+
 };
 #endif  // INCLUDE_BST_H_
